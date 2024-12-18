@@ -1,0 +1,21 @@
+:root {
+  height: 100%;
+  width: 100%;
+}
+
+html,
+body {
+  margin: 0;
+  overflow-x: hidden;
+  color: #fff;
+}
+
+/* ::-webkit-scrollbar {
+  width: 4px;
+  border-radius: 50%;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #fff;
+  border-radius: 12px;
+} */
