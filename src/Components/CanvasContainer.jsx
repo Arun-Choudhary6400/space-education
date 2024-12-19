@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { Canvas, useThree } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
 import { Planet } from "./Planets";
 import { StarField } from "./StarField";
 import EarthScene from "./Earth";
@@ -12,11 +12,12 @@ import {
   selectPlanetsList,
 } from "../Redux/Homepage/selector";
 import gsap from "gsap";
+import { changePlanetPosition } from "./hooks/changePlanetPosition";
+import { Box } from "@mui/material";
 
 export const CanvasContainer = () => {
   const dispatch = useDispatch();
   const planetGroupRef = useRef();
-  const planetRef = useRef();
   const [rotation, setRotation] = useState(0);
   const activePlanet = useSelector(selectActivePlanets);
   const planetsList = useSelector(selectPlanetsList);
@@ -26,7 +27,6 @@ export const CanvasContainer = () => {
   }, [activePlanet.position]);
 
   const radius = 12;
-  const speed = 0.05;
   const tl = useRef();
 
   useLayoutEffect(() => {
@@ -43,49 +43,21 @@ export const CanvasContainer = () => {
   }, [activePlanet.position]);
 
   // useLayoutEffect(() => {
-  //   const tl = gsap.timeline({
-  //     scrollTrigger: {
-  //       trigger: ".second-section", // The section triggering the animation
-  //       start: "top 50%", // Start when the section reaches the top
-  //       end: "bottom 50%", // End when the bottom of the section reaches the top
-  //     },
-  //   });
-  //   tl.to(planetRef.current.position, {
-  //     x: -1, // Adjust z for depth if needed
-  //     y: 1.5, // Center vertically
-  //     z: -1.7, // Move to the right
-  //     duration: 1.3, // Transition duration
-  //   });
-
-  //   const thSecTl = gsap.timeline({
-  //     scrollTrigger: {
-  //       trigger: ".third-section",
-  //       start: "top 50%",
-  //       end: "bottom 50%",
-  //       // scrub: true
-  //     },
-  //   });
-  //   thSecTl.to(planetRef.current.position, {
-  //     x: 1.7,
-  //     y: 1.5,
-  //     z: 0,
-  //     duration: 1.3,
-  //   });
-  //   // thSecTl.to(earthGroup.current.position, {
-  //   //   x: 0.9,
-  //   //   y: -3,
-  //   //   z: 0,
-  //   //   duration: 3,
-  //   // }, 3);
-  // }, []);
-
-  // useFrame(() => {
-  //   planetRef.current.rotation.y += 0.008;
-  // });
+  //   if (activePlanet.name == "EARTH") {
+  //     changePlanetPosition(earthRef);
+  //   } else if (activePlanet.name == "JUPITER") {
+  //     changePlanetPosition(jupiterRef);
+  //   } else if (activePlanet.name == "MARS") {
+  //     changePlanetPosition(marsRef);
+  //   } else if (activePlanet.name == "MOON") {
+  //     changePlanetPosition(moonRef);
+  //   }
+  // }, [activePlanet]);
 
   return (
     <>
       <Canvas
+        eventSource={document.body}
         dpr={[1, 2]}
         style={{ height: "100vh", width: "100vw" }}
         camera={{
@@ -97,14 +69,39 @@ export const CanvasContainer = () => {
         <color attach={"background"} args={["#000"]} />
         <group name="Planets" rotation-y={rotation} ref={planetGroupRef}>
           {planets.map((planet, index) => (
-            <Planet
-              planetName={planet.name}
-              key={planet.name}
-              // ref={activePlanet.name == planet.name ? planetRef : null}
-              Component={planet.Component}
-              radius={radius}
-              offset={(index / planets.length) * Math.PI * 2}
-            />
+            <group key={planet.name}>
+              {planet.name == "EARTH" ? (
+                <EarthScene
+                  planetName={planet.name}
+                  offset={(index / planets.length) * Math.PI * 2}
+                />
+              ) : planet.name == "MOON" ? (
+                <MoonScene
+                  planetName={planet.name}
+                  offset={(index / planets.length) * Math.PI * 2}
+                />
+              ) : planet.name == "MARS" ? (
+                <MarsScene
+                  planetName={planet.name}
+                  offset={(index / planets.length) * Math.PI * 2}
+                />
+              ) : planet.name == "JUPITER" ? (
+                <JupiterScene
+                  planetName={planet.name}
+                  offset={(index / planets.length) * Math.PI * 2}
+                />
+              ) : (
+                ""
+              )}
+            </group>
+            // <Planet
+            //   planetName={planet.name}
+            //   key={planet.name}
+            //   // ref={activePlanet.name == planet.name ? planetRef : null}
+            //   Component={planet.Component}
+            //   radius={radius}
+            //   offset={(index / planets.length) * Math.PI * 2}
+            // />
           ))}
         </group>
         <StarField />

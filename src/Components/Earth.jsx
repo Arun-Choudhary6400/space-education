@@ -1,21 +1,45 @@
-import React, { useLayoutEffect, useRef } from "react";
+import React, { useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-import { useSelect, useTexture } from "@react-three/drei";
+import { useTexture } from "@react-three/drei";
 import { getFresnelMat } from "./hooks/getFresneMat";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import { useDispatch, useSelector } from "react-redux";
-import { actions } from "../Redux/Homepage/slice";
 import { selectActivePlanets } from "../Redux/Homepage/selector";
+import { changePlanetPosition } from "./hooks/changePlanetPosition";
 
 // Register the ScrollTrigger plugin
-gsap.registerPlugin(ScrollTrigger);
 
-const Earth = (props) => {
+const Earth = ({ planetName, offset, props }) => {
   const earthGroup = useRef();
-  const activePlanet = useSelector(selectActivePlanets)
+  const activePlanet = useSelector(selectActivePlanets);
   const dispatch = useDispatch();
+  // /planet position
+  const radius = 12;
+  const defaultPosition = [12, -1.5, 0];
+  // let position = useMemo(() => {
+  //   const x = radius * Math.cos(offset);
+  //   const z = radius * Math.sin(offset);
+  //   return [x, -1.5, z];
+  // }, [radius, offset]);
+
+    const calculatedPosition = useMemo(() => {
+      const x = radius * Math.cos(offset);
+      const z = radius * Math.sin(offset);
+      return [x, -1.5, z];
+    }, [radius, offset]);
+  
+    useLayoutEffect(() => {
+      if (earthGroup.current) {
+        if (activePlanet.name === "EARTH") {
+          earthGroup.current.position.set(...calculatedPosition);
+          changePlanetPosition(earthGroup); // Additional animations if needed
+        } else {
+          earthGroup.current.position.set(...defaultPosition);
+        }
+      }
+    }, [activePlanet, calculatedPosition, defaultPosition]);
 
   // Load textures
   const textures = {
@@ -49,53 +73,39 @@ const Earth = (props) => {
   });
 
   const fresnelMaterial = getFresnelMat();
-  // Animate the Earth position on scroll
-  useLayoutEffect(() => {
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: ".second-section", // The section triggering the animation
-        start: "top 50%", // Start when the section reaches the top
-        end: "bottom 50%", // End when the bottom of the section reaches the top
-      },
-    });
-    tl.to(earthGroup.current.position, {
-      x: -1, // Adjust z for depth if needed
-      y: 1.5, // Center vertically
-      z: -1.7, // Move to the right
-      duration: 1.3, // Transition duration
-    });
 
-   const thSecTl = gsap.timeline({
-      scrollTrigger: {
-        trigger: ".third-section",
-        start: "top 50%",
-        end: "bottom 50%",
-        // scrub: true
-      },
-    });
-    thSecTl.to(earthGroup.current.position, {
-      x: 1.7,
-      y: 1.5,
-      z: 0,
-      duration: 1.3,
-    });
-    // thSecTl.to(earthGroup.current.position, {
-    //   x: 0.9,
-    //   y: -3,
-    //   z: 0,
-    //   duration: 3,
-    // }, 3);
-  }, []);
+  // useLayoutEffect(() => {
+  //   if (activePlanet.name == "EARTH") {
+  //     changePlanetPosition(earthGroup);
+  //   } else {
+      
+  //     position = defaultPosition;
+  //     console.log("default position", position);
+  //   }
+  // }, [activePlanet]);
 
   useFrame(() => {
     earthGroup.current.rotation.y += 0.008;
   });
+
+  const handleClick = (e) => {
+    const screenWidth = window.innerWidth; // Total width of the screen
+    const clickX = e.clientX; // X-coordinate of the click
+
+    if (clickX > screenWidth / 2) {
+      console.log("Right");
+    } else {
+      console.log("Left");
+    }
+  };
 
   return (
     <group
       {...props}
       ref={earthGroup}
       rotation={[(-23.4 * Math.PI) / 180, 0, 0]}
+      onClick={handleClick}
+      // position={position}
     >
       <mesh
         geometry={new THREE.IcosahedronGeometry(1, 12)}
@@ -119,10 +129,10 @@ const Earth = (props) => {
   );
 };
 
-const EarthScene = () => (
+const EarthScene = ({ planetName, offset }) => (
   <>
     <directionalLight position={[-2, 1.5, 1.5]} intensity={1} />
-    <Earth />
+    <Earth planetName={planetName} offset={offset} />
   </>
 );
 

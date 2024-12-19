@@ -1,19 +1,9 @@
-import React, {
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import "./App.css";
-import getStarfield from "./Components/hooks/getStarField";
 import EarthScene from "./Components/Earth";
 import MoonScene from "./Components/Moon";
 import MarsScene from "./Components/Mars";
 import JupiterScene from "./Components/Jupiter";
-import { OrbitControls, ScrollControls } from "@react-three/drei";
-import { UI } from "./Components/UI";
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectActivePlanets,
@@ -22,12 +12,12 @@ import {
 import { gsap } from "gsap";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 import InfiniteCarousel from "./Components/InfiniteCarousel";
-import { actions } from "./Redux/Homepage/slice";
 import Navbar from "./Components/Layouts/Navbar";
 import { Box } from "@mui/material";
 import Overlay from "./Components/Overlay";
 import { CanvasContainer } from "./Components/CanvasContainer";
 import MoreInfo from "./Components/MoreInfo";
+import { actions } from "./Redux/Homepage/slice";
 gsap.registerPlugin(ScrollToPlugin);
 
 function App() {
@@ -58,10 +48,8 @@ function App() {
 
   useEffect(() => {
     setRotation(rotation + -Math.PI / 2);
-  }, [activePlanet.position]);
+  }, [activePlanet]);
 
-  const radius = 12;
-  const speed = 0.05;
   const tl = useRef();
   useLayoutEffect(() => {
     if (planetGroupRef.current) {
@@ -74,55 +62,16 @@ function App() {
         overwrite: "auto",
       });
     }
-  }, [activePlanet.position]);
+  }, [activePlanet]);
 
-  // const containerRef = useRef(null);
-
-  // useEffect(() => {
-  //   const sections = gsap.utils.toArray(".section");
-  //   console.log("section", sections);
-    
-  //   const container = containerRef.current;
-
-  //   // Set up the scroll logic
-  //   gsap.to(sections, {
-  //     xPercent: -100 * (sections.offsetHeight - 1),
-  //     ease: "linear",
-  //     scrollTrigger: {
-  //       trigger: container,
-  //       start: "top top",
-  //       end: () => `+=${100 * sections.offsetHeight}px`,
-  //       // pin: true,
-  //       // scrub: true,
-  //       snap: 1 / (sections.offsetHeight - 1),
-  //     },
-  //   });
-  // }, []);
   const sectionsRef = useRef([]);
   const currentSection = useRef(0);
   const scrollDistance = useRef(0); // Track cumulative scroll distance
 
-  // const handleWheel = (e) => {
-  //   const direction = e.deltaY > 0 ? 1 : -1; // Scroll direction
-  //   const nextSection = currentSection.current + direction;
-
-  //   // Clamp the section index to avoid overscrolling
-  //   if (nextSection >= 0 && nextSection < sectionsRef.current.length) {
-  //     currentSection.current = nextSection;
-
-  //     gsap.to(window, {
-  //       scrollTo: {
-  //         y: sectionsRef.current[nextSection],
-  //       },
-  //       duration: 1.5, // Smooth transition duration
-  //     });
-  //   }
-  // };
-
   const handleWheel = (e) => {
     scrollDistance.current += e.deltaY;
 
-    if (Math.abs(scrollDistance.current) >= 200) {
+    if (Math.abs(scrollDistance.current) >= 250) {
       const direction = scrollDistance.current > 0 ? 1 : -1; // Determine scroll direction
       const nextSection = currentSection.current + direction;
 
@@ -157,14 +106,14 @@ function App() {
   return (
     <>
       <Box>
-      <Navbar />
+        <Navbar />
         <Box
           sx={{
             height: "100vh",
             weight: "100vw",
             position: "fixed",
             top: 0,
-            zIndex: -1
+            zIndex: -1,
           }}
         >
           <CanvasContainer />

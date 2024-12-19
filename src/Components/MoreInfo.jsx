@@ -1,17 +1,34 @@
-import { Box, Grid2 as Grid, Typography } from "@mui/material";
+import { Box, Grid2 as Grid, Typography, Button, Tooltip } from "@mui/material";
 import React, { forwardRef, useEffect } from "react";
+import { ArrowUpward } from "@mui/icons-material";
+import gsap from "gsap";
+import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 
+gsap.registerPlugin(ScrollToPlugin);
 const MoreInfo = forwardRef((props, ref) => {
-  useEffect(() => {
-    const moreInfo = document.getElementsByClassName("third-section");
-    moreInfo[0].addEventListener("scroll", (e) => {
-      if (e.scrollY >= 100) {
-        document
-          .getElementById("first-section")
-          .scrollIntoView({ behavior: "smooth" });
-      }
+  // useEffect(() => {
+  //   const moreInfo = document.getElementsByClassName("third-section");
+  //   moreInfo[0].addEventListener("scroll", (e) => {
+  //     if (e.scrollY >= 100) {
+  //       document
+  //         .getElementById("first-section")
+  //         .scrollIntoView({ behavior: "smooth" });
+  //     }
+  //   });
+  // }, []);
+
+  const scrollToTop = () => {
+    // window.scrollTo({
+    //   top: 0,
+    //   behavior: "smooth", // Optional for smooth scrolling
+    // });
+    gsap.to(window, {
+      scrollTo: {
+        y: 0,
+      },
+      duration: 2.3, // Smooth transition duration
     });
-  }, []);
+  };
 
   return (
     <>
@@ -66,6 +83,30 @@ const MoreInfo = forwardRef((props, ref) => {
               dignissimos architecto ipsa iure. Totam, rem. Magni illum in natus
               ullam, ab necessitatibus labore unde
             </Typography>
+            <Box sx={{ position: "relative" }}>
+              <Tooltip title="Back To Top" placement="top">
+                <Button
+                  disableRipple
+                  onClick={scrollToTop}
+                  sx={{
+                    backgroundColor: "#fff",
+                    borderRadius: "50%",
+                    p: 1.5,
+                    minWidth: "auto",
+                    position: "absolute",
+                    bottom: 73,
+                    right: -60,
+                  }}
+                >
+                  <ArrowUpward
+                    sx={{
+                      color: "#000",
+                      fontSize: 22,
+                    }}
+                  />
+                </Button>
+              </Tooltip>
+            </Box>
           </Grid>
         </Grid>
       </Box>
