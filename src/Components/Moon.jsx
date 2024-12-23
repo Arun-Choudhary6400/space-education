@@ -1,49 +1,12 @@
-import React, { useEffect, useLayoutEffect, useMemo, useRef } from "react";
+import React, { useLayoutEffect, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { useTexture } from "@react-three/drei";
 import { getFresnelMat } from "./hooks/getFresneMat";
 import { changePlanetPosition } from "./hooks/changePlanetPosition";
-import { useSelector } from "react-redux";
-import { selectActivePlanets } from "../Redux/Homepage/selector";
-import { defaultPlanetPosition } from "./hooks/defaultPlanetPosition";
 
-const Moon = ({ planetName, offset }) => {
+const Moon = () => {
   const moonGroup = useRef();
-  const activePlanet = useSelector(selectActivePlanets);
-  // /planet position
-  const radius = 12;
-  const defaultPosition = [7.347880794884119e-16, -1.5, 12];
-  // let position = useMemo(() => {
-  //   const x = radius * Math.cos(offset);
-  //   const z = radius * Math.sin(offset);
-  //   return [x, -1.5, z];
-  // }, [radius, offset]);
-
-  const calculatedPosition = useMemo(() => {
-    const x = radius * Math.cos(offset);
-    const z = radius * Math.sin(offset);
-    return [x, -1.5, z];
-  }, [radius, offset]);
-
-  useLayoutEffect(() => {
-    if (moonGroup.current) {
-      if (activePlanet.name === "MOON") {
-        moonGroup.current.position.set(...calculatedPosition);
-        changePlanetPosition(moonGroup); // Additional animations if needed
-      } else {
-        moonGroup.current.position.set(...defaultPosition);
-      }
-    }
-  }, [activePlanet, calculatedPosition, defaultPosition]);
-
-  // useLayoutEffect(() => {
-  //   if (activePlanet.name == "MOON") {
-  //     changePlanetPosition(moonGroup);
-  //   } else {
-  //     position = defaultPosition;
-  //   }
-  // }, [activePlanet]);
 
   // Load textures
   const textures = {
@@ -60,16 +23,17 @@ const Moon = ({ planetName, offset }) => {
 
   const fresnelMaterial = getFresnelMat(0xaaaaaa);
 
+  // Animate the Earth position on scroll
+  // useLayoutEffect(() => {
+  //   changePlanetPosition(moonGroup);
+  // }, []);
+
   useFrame(() => {
     moonGroup.current.rotation.y += 0.008;
   });
 
   return (
-    <group
-      ref={moonGroup}
-      rotation={[(-23.4 * Math.PI) / 180, 0, 0]}
-      // position={position}
-    >
+    <group ref={moonGroup} rotation={[(-23.4 * Math.PI) / 180, 0, 0]}>
       <mesh
         geometry={new THREE.IcosahedronGeometry(1, 12)}
         material={moonMaterial}
@@ -83,12 +47,10 @@ const Moon = ({ planetName, offset }) => {
   );
 };
 
-const MoonScene = ({ planetName, offset }) => (
+const MoonScene = () => (
   <>
-    {/* <ambientLight intensity={0.5} /> */}
     <directionalLight position={[-2, 1.5, 1.5]} intensity={2} />
-    <Moon planetName={planetName} offset={offset} />
-    {/* <OrbitControls /> */}
+    <Moon />
   </>
 );
 

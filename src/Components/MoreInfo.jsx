@@ -1,32 +1,15 @@
-import { Box, Grid2 as Grid, Typography, Button, Tooltip } from "@mui/material";
-import React, { forwardRef, useEffect } from "react";
 import { ArrowUpward } from "@mui/icons-material";
+import { Box, Button, Grid2 as Grid, Tooltip, Typography } from "@mui/material";
 import gsap from "gsap";
-import { ScrollToPlugin } from "gsap/ScrollToPlugin";
+import React, { forwardRef, useEffect } from "react";
 
-gsap.registerPlugin(ScrollToPlugin);
 const MoreInfo = forwardRef((props, ref) => {
-  // useEffect(() => {
-  //   const moreInfo = document.getElementsByClassName("third-section");
-  //   moreInfo[0].addEventListener("scroll", (e) => {
-  //     if (e.scrollY >= 100) {
-  //       document
-  //         .getElementById("first-section")
-  //         .scrollIntoView({ behavior: "smooth" });
-  //     }
-  //   });
-  // }, []);
-
   const scrollToTop = () => {
-    // window.scrollTo({
-    //   top: 0,
-    //   behavior: "smooth", // Optional for smooth scrolling
-    // });
     gsap.to(window, {
       scrollTo: {
         y: 0,
       },
-      duration: 2.3, // Smooth transition duration
+      duration: 2.3,
     });
   };
 

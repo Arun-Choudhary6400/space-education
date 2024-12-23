@@ -25,6 +25,8 @@ export const homepageSlice = createSlice({
     setActivePlanet: (state, action) => {
       state.activePlanet.name = action.payload.name;
       state.activePlanet.position = action.payload.position;
+      console.log("redux action.payload.name",action.payload.name)
+      console.log("redux action.payload.position",action.payload.position)
     },
     toggleHideOtherPlanets: (state, action) => {
       state.hideOtherPlanets = action.payload;

@@ -1,10 +1,7 @@
 import { Box, Button, Typography } from "@mui/material";
 import React, { useState } from "react";
-import { actions } from "../../Redux/Homepage/slice";
-import { useDispatch } from "react-redux";
 
 const Navbar = () => {
-  const dispatch = useDispatch()
   const [activeLink, setActiveLink] = useState("Planets");
   return (
     <>
@@ -53,24 +50,9 @@ const Navbar = () => {
             sx={{
               display: "flex",
               alignItems: "center",
-              gap: { md: 2.5, lg: 5 },
+              gap: {md: 2.5, lg: 5},
             }}
           >
-            {/* <Button
-            sx={{
-              pointerEvents: "auto"
-            }}
-              onClick={() => {
-                dispatch(
-                  actions.setActivePlanet({
-                    name: "MARS",
-                    position: 4,
-                  })
-                );
-              }}
-            >
-              Next
-            </Button> */}
             <Typography
               onClick={() => setActiveLink("Planets")}
               sx={[
@@ -115,7 +97,7 @@ const Navbar = () => {
                 border: 0,
                 pointerEvents: "auto",
                 fontWeight: 700,
-                letterSpacing: 0.2,
+                letterSpacing: 0.2
               }}
             >
               Enroll

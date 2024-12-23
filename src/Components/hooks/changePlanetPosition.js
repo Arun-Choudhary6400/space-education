@@ -17,9 +17,9 @@ export const changePlanetPosition = (ref) => {
     });
 
     tl.to(ref.current.position, {
-        x: 11.2, // Adjust z for depth if needed
-        y: 0, // Center vertically
-        z: -1.4, // Move to the right
+        x: -1, // Adjust z for depth if needed
+        y: 1.5, // Center vertically
+        z: -1.7, // Move to the right
         duration: 1.3, // Transition duration
     });
 
@@ -33,14 +33,14 @@ export const changePlanetPosition = (ref) => {
         },
     });
     thSecTl.to(ref.current.position, {
-        x: 13.5,
-        y: 0,
+        x: 1.7,
+        y: 1.5,
         z: 0,
         duration: 1.3,
     });
     // thSecTl.to(ref.current.position, {
-    //   x: 12,
-    //   y: -2.5,
+    // x: 0.9,
+    //   y: -3,
     //   z: 0,
     //   duration: 3,
     // }, 3);

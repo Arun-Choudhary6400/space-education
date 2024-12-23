@@ -1,45 +1,22 @@
-import React, { useEffect, useLayoutEffect, useMemo, useRef } from "react";
+import React, { useLayoutEffect, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-import { useTexture } from "@react-three/drei";
+import { useSelect, useTexture } from "@react-three/drei";
 import { getFresnelMat } from "./hooks/getFresneMat";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import { useDispatch, useSelector } from "react-redux";
+import { actions } from "../Redux/Homepage/slice";
 import { selectActivePlanets } from "../Redux/Homepage/selector";
 import { changePlanetPosition } from "./hooks/changePlanetPosition";
 
 // Register the ScrollTrigger plugin
+gsap.registerPlugin(ScrollTrigger);
 
-const Earth = ({ planetName, offset, props }) => {
+const Earth = (props) => {
   const earthGroup = useRef();
-  const activePlanet = useSelector(selectActivePlanets);
+  const activePlanet = useSelector(selectActivePlanets)
   const dispatch = useDispatch();
-  // /planet position
-  const radius = 12;
-  const defaultPosition = [12, -1.5, 0];
-  // let position = useMemo(() => {
-  //   const x = radius * Math.cos(offset);
-  //   const z = radius * Math.sin(offset);
-  //   return [x, -1.5, z];
-  // }, [radius, offset]);
-
-    const calculatedPosition = useMemo(() => {
-      const x = radius * Math.cos(offset);
-      const z = radius * Math.sin(offset);
-      return [x, -1.5, z];
-    }, [radius, offset]);
-  
-    useLayoutEffect(() => {
-      if (earthGroup.current) {
-        if (activePlanet.name === "EARTH") {
-          earthGroup.current.position.set(...calculatedPosition);
-          changePlanetPosition(earthGroup); // Additional animations if needed
-        } else {
-          earthGroup.current.position.set(...defaultPosition);
-        }
-      }
-    }, [activePlanet, calculatedPosition, defaultPosition]);
 
   // Load textures
   const textures = {
@@ -73,39 +50,20 @@ const Earth = ({ planetName, offset, props }) => {
   });
 
   const fresnelMaterial = getFresnelMat();
-
+  // Animate the Earth position on scroll
   // useLayoutEffect(() => {
-  //   if (activePlanet.name == "EARTH") {
-  //     changePlanetPosition(earthGroup);
-  //   } else {
-      
-  //     position = defaultPosition;
-  //     console.log("default position", position);
-  //   }
-  // }, [activePlanet]);
+  //   changePlanetPosition(earthGroup)
+  // }, [])
 
   useFrame(() => {
     earthGroup.current.rotation.y += 0.008;
   });
-
-  const handleClick = (e) => {
-    const screenWidth = window.innerWidth; // Total width of the screen
-    const clickX = e.clientX; // X-coordinate of the click
-
-    if (clickX > screenWidth / 2) {
-      console.log("Right");
-    } else {
-      console.log("Left");
-    }
-  };
 
   return (
     <group
       {...props}
       ref={earthGroup}
       rotation={[(-23.4 * Math.PI) / 180, 0, 0]}
-      onClick={handleClick}
-      // position={position}
     >
       <mesh
         geometry={new THREE.IcosahedronGeometry(1, 12)}
@@ -129,10 +87,10 @@ const Earth = ({ planetName, offset, props }) => {
   );
 };
 
-const EarthScene = ({ planetName, offset }) => (
+const EarthScene = () => (
   <>
     <directionalLight position={[-2, 1.5, 1.5]} intensity={1} />
-    <Earth planetName={planetName} offset={offset} />
+    <Earth />
   </>
 );
 
