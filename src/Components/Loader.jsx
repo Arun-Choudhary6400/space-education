@@ -13,10 +13,6 @@ const Loader = () => {
           alignItems: "center",
           justifyContent: "center",
           backgroundColor: "#000",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
         }}
       >
         <div class="title">
@@ -47,7 +43,7 @@ const Loader = () => {
             textTransform: "capitalize",
           }}
         >
-          Tip: You can change planets with arrows too.
+          Tip: You can change planets with arrows key too.
         </Typography>
       </Box>
     </>
