@@ -375,7 +375,7 @@ export const CanvasContainer = () => {
 
   useEffect(() => {
     const handleKeyPress = (event) => {
-      if (isRotating) return; // Ignore keyboard input while rotating
+      if (isRotating || isThirdSection) return; // Ignore keyboard input while rotating
 
       if (event.key === "ArrowLeft") {
         handleBack();
