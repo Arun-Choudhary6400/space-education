@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useRef, useState } from "react";
+import React, { forwardRef } from "react";
 import "./Carousel.css";
 import { Box, Button, Grid2 as Grid, Typography } from "@mui/material";
 import { selectActivePlanets } from "../Redux/Homepage/selector";
@@ -14,9 +14,8 @@ const InfiniteCarousel = forwardRef((props, ref) => {
         ref={ref}
         className="second-section section"
         sx={{
-          height: "100vh",
+          height: { xs: "100dvh", md: "100vh" },
           width: "100vw",
-          zIndex: 12,
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
@@ -24,7 +23,7 @@ const InfiniteCarousel = forwardRef((props, ref) => {
       >
         <Box
           sx={{
-            padding: "0px 140px",
+            px: { xs: "16px", sm: "24px", md: "32px", xl: "140px" },
           }}
         >
           <Grid container>
@@ -32,7 +31,7 @@ const InfiniteCarousel = forwardRef((props, ref) => {
               <Typography
                 component={"h1"}
                 sx={{
-                  fontSize: 30,
+                  fontSize: { xs: 26, sm: 30 },
                   lineHeight: 1.5,
                   width: "fit-content",
                 }}
@@ -41,7 +40,7 @@ const InfiniteCarousel = forwardRef((props, ref) => {
               </Typography>
               <Typography
                 sx={{
-                  fontSize: 110,
+                  fontSize: { xs: 60, sm: 80, lg: 110 },
                   lineHeight: 1.5,
                   position: "relative",
                   width: "fit-content",
@@ -49,9 +48,8 @@ const InfiniteCarousel = forwardRef((props, ref) => {
                     content: "''",
                     width: 120,
                     position: "absolute",
-                    bottom: -40,
+                    bottom: { xs: -20, lg: -40 },
                     left: 0,
-                    // transform: "translateX(-50%)",
                     borderRadius: "12px",
                     borderBottom: "4px solid #8FD5E7",
                   },
@@ -61,11 +59,9 @@ const InfiniteCarousel = forwardRef((props, ref) => {
               </Typography>
               <Typography
                 sx={{
-                  pt: 10,
-                  mt: 3,
+                  pt: { xs: 8, lg: 13 },
                   fontSize: 18,
                   lineHeight: 2,
-                  // color: "#fff"
                 }}
               >
                 Lorem ipsum dolor sit amet consectetur adipisicing elit.
@@ -75,7 +71,7 @@ const InfiniteCarousel = forwardRef((props, ref) => {
               </Typography>
               <Box
                 sx={{
-                  marginTop: 12,
+                  marginTop: { xs: 6, lg: 12 },
                   display: "flex",
                   gap: 2,
                 }}
@@ -85,10 +81,18 @@ const InfiniteCarousel = forwardRef((props, ref) => {
                     borderRadius: "50px",
                     backgroundColor: "#fff",
                     color: "#000",
-                    padding: "14px 38px",
+                    py: "14px",
                     border: 0,
+                    width: { xs: 150, md: 172 },
                     fontWeight: 700,
                     letterSpacing: 0.2,
+                    background: "linear-gradient(to bottom, #c6d9ef, #9fbddf)",
+                    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.2)",
+                    transition: "transform 0.3s, box-shadow 0.3s",
+                    ":hover": {
+                      transform: "translateY(-2px)",
+                      boxShadow: "0 6px 15px rgba(100, 200, 255, 0.6)"
+                    }
                   }}
                 >
                   Learn More
@@ -98,8 +102,14 @@ const InfiniteCarousel = forwardRef((props, ref) => {
                     borderRadius: "50%",
                     backgroundColor: "#fff",
                     minWidth: "auto",
-                    flexShrink: 0,
                     padding: "6px 16px",
+                    background: "linear-gradient(to bottom, #c6d9ef, #9fbddf)",
+                    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.2)",
+                    transition: "transform 0.3s, box-shadow 0.3s",
+                    ":hover": {
+                      transform: "translateY(-2px)",
+                      boxShadow: "0 6px 15px rgba(100, 200, 255, 0.6)"
+                    }
                   }}
                 >
                   <PlayArrowRounded
@@ -118,5 +128,3 @@ const InfiniteCarousel = forwardRef((props, ref) => {
 });
 
 export default InfiniteCarousel;
-
-const items = ["Item 1", "Item 2", "Item 3", "Item 4", "Item 5"];

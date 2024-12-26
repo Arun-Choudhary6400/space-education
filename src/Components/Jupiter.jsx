@@ -1,8 +1,9 @@
-import React, { useRef } from "react";
+import React, { useLayoutEffect, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { useTexture } from "@react-three/drei";
 import { getFresnelMat } from "./hooks/getFresneMat";
+import { changePlanetPosition } from "./hooks/changePlanetPosition";
 
 const Jupiter = () => {
   const jupiterGroup = useRef();
@@ -18,6 +19,10 @@ const Jupiter = () => {
     map: textures.map,
   });
   const fresnelMaterial = getFresnelMat(0xaaaaaa);
+  // Animate the Earth position on scroll
+  // useLayoutEffect(() => {
+  //   changePlanetPosition(jupiterGroup);
+  // }, []);
 
   useFrame(() => {
     jupiterGroup.current.rotation.y += 0.008;

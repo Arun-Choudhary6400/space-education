@@ -1,8 +1,9 @@
-import React, { useRef } from "react";
+import React, { useLayoutEffect, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { useTexture } from "@react-three/drei";
 import { getFresnelMat } from "./hooks/getFresneMat";
+import { changePlanetPosition } from "./hooks/changePlanetPosition";
 
 const Moon = () => {
   const moonGroup = useRef();
@@ -21,6 +22,11 @@ const Moon = () => {
   });
 
   const fresnelMaterial = getFresnelMat(0xaaaaaa);
+
+  // Animate the Earth position on scroll
+  // useLayoutEffect(() => {
+  //   changePlanetPosition(moonGroup);
+  // }, []);
 
   useFrame(() => {
     moonGroup.current.rotation.y += 0.008;
@@ -43,10 +49,8 @@ const Moon = () => {
 
 const MoonScene = () => (
   <>
-    {/* <ambientLight intensity={0.5} /> */}
     <directionalLight position={[-2, 1.5, 1.5]} intensity={2} />
     <Moon />
-    {/* <OrbitControls /> */}
   </>
 );
 

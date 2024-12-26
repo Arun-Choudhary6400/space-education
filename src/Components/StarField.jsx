@@ -5,7 +5,7 @@ import { useEffect } from "react";
 export const StarField = () => {
     const { scene } = useThree();
     useEffect(() => {
-      const starfield = getStarfield({ numStars: 200 });
+      const starfield = getStarfield({ numStars: 1000 });
       scene.add(starfield);
   
       return () => {

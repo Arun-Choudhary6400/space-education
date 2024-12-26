@@ -1,8 +1,9 @@
-import React, { useRef } from "react";
+import React, { useLayoutEffect, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { useTexture } from "@react-three/drei";
 import { getFresnelMat } from "./hooks/getFresneMat";
+import { changePlanetPosition } from "./hooks/changePlanetPosition";
 
 const Mars = () => {
   const marsGroup = useRef();
@@ -17,6 +18,11 @@ const Mars = () => {
     map: textures.map,
   });
   const fresnelMaterial = getFresnelMat(0xd38080);
+
+  // Animate the Earth position on scroll
+  // useLayoutEffect(() => {
+  //   changePlanetPosition(marsGroup);
+  // }, []);
 
   useFrame(() => {
     marsGroup.current.rotation.y += 0.008;
