@@ -50,10 +50,6 @@ const Earth = (props) => {
   });
 
   const fresnelMaterial = getFresnelMat();
-  // Animate the Earth position on scroll
-  // useLayoutEffect(() => {
-  //   changePlanetPosition(earthGroup)
-  // }, [])
 
   useFrame(() => {
     earthGroup.current.rotation.y += 0.008;

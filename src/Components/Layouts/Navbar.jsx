@@ -1,8 +1,32 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Menu } from "@mui/icons-material";
+import {
+  Box,
+  Button,
+  Drawer,
+  Skeleton,
+  styled,
+  SwipeableDrawer,
+  Typography,
+} from "@mui/material";
 import React, { useState } from "react";
 
-const Navbar = () => {
+const drawerWidth = 240;
+
+const Navbar = (props) => {
   const [activeLink, setActiveLink] = useState("Planets");
+  const { window } = props;
+  const [open, setOpen] = useState(false);
+
+  const toggleDrawer = (newOpen) => () => {
+    setOpen(newOpen);
+    if (newOpen == false) {
+      // if (typeof window != "undefined" && window.document) {
+      document.body.style.overflow = "hidden";
+      // }
+    } else {
+      document.body.style.overflow = "unset";
+    }
+  };
   return (
     <>
       <Box
@@ -48,44 +72,84 @@ const Navbar = () => {
           </a>
           <Box
             sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: {md: 2.5, lg: 5},
+              display: { xs: "block", md: "none" },
+              alignContent: "center",
             }}
           >
-            <Typography
-              onClick={() => setActiveLink("Planets")}
-              sx={[
-                navlinkStyle,
-                activeLink == "Planets" ? activeLinkStyle : "",
-              ]}
+            <Button
+              disableRipple
+              sx={{
+                pointerEvents: "auto",
+              }}
+              onClick={toggleDrawer(true)}
             >
-              Planets
-            </Typography>
-            <Typography
-              onClick={() => setActiveLink("Trailers")}
-              sx={[
-                navlinkStyle,
-                activeLink == "Trailers" ? activeLinkStyle : "",
-              ]}
+              <Menu
+                sx={{
+                  color: "#fff",
+                }}
+              />
+            </Button>
+            <Drawer
+              open={open}
+              onClose={toggleDrawer(false)}
+              ModalProps={{
+                keepMounted: true, // Better open performance on mobile.
+              }}
+              variant="temporary"
+              anchor="right"
+              sx={{
+                display: { xs: "block", md: "none" },
+                "& .MuiDrawer-paper": {
+                  boxSizing: "border-box",
+                  width: drawerWidth,
+                  height: "100vh",
+                  overflow: "hidden",
+                  backgroundColor: "transparent",
+                },
+              }}
             >
-              Trailers
-            </Typography>
-            <Typography
-              onClick={() => setActiveLink("Tickets")}
-              sx={[
-                navlinkStyle,
-                activeLink == "Tickets" ? activeLinkStyle : "",
-              ]}
-            >
-              Tickets
-            </Typography>
-            <Typography
-              onClick={() => setActiveLink("Blogs")}
-              sx={[navlinkStyle, activeLink == "Blogs" ? activeLinkStyle : ""]}
-            >
-              Blogs
-            </Typography>
+              <Box
+                sx={{
+                  width: drawerWidth,
+                  height: "100vh",
+                  backgroundColor: "transparent",
+                  backdropFilter: "blur(4px)",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 3,
+                  px: 3,
+                  pt: 6
+                }}
+              >
+                {navLinks?.map((item) => (
+                  <Typography
+                    onClick={() => setActiveLink(item)}
+                    sx={[
+                      { color: "#fff", fontSize: 18 },
+                      activeLink == item ? activeLinkStyle : "",
+                    ]}
+                  >
+                    {item}
+                  </Typography>
+                ))}
+              </Box>
+            </Drawer>
+          </Box>
+          <Box
+            sx={{
+              display: { xs: "none", md: "flex" },
+              alignItems: "center",
+              gap: { md: 2.5, lg: 5 },
+            }}
+          >
+            {navLinks?.map((item) => (
+              <Typography
+                onClick={() => setActiveLink(item)}
+                sx={[navlinkStyle, activeLink == item ? activeLinkStyle : ""]}
+              >
+                {item}
+              </Typography>
+            ))}
             <Button
               sx={{
                 borderRadius: "50px",
@@ -97,7 +161,7 @@ const Navbar = () => {
                 border: 0,
                 pointerEvents: "auto",
                 fontWeight: 700,
-                letterSpacing: 0.2
+                letterSpacing: 0.2,
               }}
             >
               Enroll
@@ -129,3 +193,4 @@ const activeLinkStyle = {
     borderBottom: "4px solid #8FD5E7",
   },
 };
+const navLinks = ["Planets", "Trailers", "Tickets", "Blogs"];

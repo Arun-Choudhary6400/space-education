@@ -1,9 +1,5 @@
 import React, { useEffect, useRef } from "react";
 import "./App.css";
-import EarthScene from "./Components/Earth";
-import MoonScene from "./Components/Moon";
-import MarsScene from "./Components/Mars";
-import JupiterScene from "./Components/Jupiter";
 import { useDispatch, useSelector } from "react-redux";
 import { selectActivePlanets } from "./Redux/Homepage/selector";
 import { gsap } from "gsap";
@@ -22,71 +18,92 @@ function App() {
   const dispatch = useDispatch();
   const activePlanet = useSelector(selectActivePlanets);
   const sectionsRef = useRef([]);
-  const currentSection = useRef(0);
-  const scrollDistance = useRef(0); // Track cumulative scroll distance
+  const isScrolling = useRef(false);
+  const scrollAccumulator = useRef(0);
+  const SCROLL_THRESHOLD = 400; // Increased threshold for scroll accumulation
+
+  useEffect(() => {
+    const sections = sectionsRef.current.filter(Boolean);
+
+    sections.forEach((section) => {
+      ScrollTrigger.create({
+        trigger: section,
+        start: "top 60%",
+        end: "bottom 40%",
+        onEnter: () => {
+          if (!isScrolling.current) {
+            scrollToSection(section);
+          }
+        },
+        onEnterBack: () => {
+          if (!isScrolling.current) {
+            scrollToSection(section);
+          }
+        }
+      });
+    });
+
+    return () => {
+      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+    };
+  }, []);
+
+  const scrollToSection = (section) => {
+    isScrolling.current = true;
+    gsap.to(window, {
+      scrollTo: { y: section, autoKill: false },
+      duration: 1,
+      ease: "power2.out",
+      onComplete: () => {
+        setTimeout(() => {
+          isScrolling.current = false;
+          scrollAccumulator.current = 0;
+        }, 100);
+      }
+    });
+  };
 
   const handleWheel = (e) => {
-    scrollDistance.current += e.deltaY;
+    if (isScrolling.current) {
+      e.preventDefault();
+      return;
+    }
 
-    if (Math.abs(scrollDistance.current) >= 200) {
-      const direction = scrollDistance.current > 0 ? 1 : -1; // Determine scroll direction
-      const nextSection = currentSection.current + direction;
+    scrollAccumulator.current += Math.abs(e.deltaY);
 
-      // Clamp the section index to avoid overscrolling
-      if (nextSection >= 0 && nextSection < sectionsRef.current.length) {
-        currentSection.current = nextSection;
+    if (scrollAccumulator.current >= SCROLL_THRESHOLD) {
+      const sections = sectionsRef.current.filter(Boolean);
+      const currentSection = sections.findIndex(
+        section => Math.abs(window.scrollY - section.offsetTop) < window.innerHeight / 2
+      );
 
-        gsap.to(window, {
-          scrollTo: {
-            y: sectionsRef.current[nextSection],
-            autoKill: false
-          },
-          duration: 1, // Smooth transition duration
-        });
+      if (currentSection === -1) return;
+
+      const direction = e.deltaY > 0 ? 1 : -1;
+      const nextIndex = Math.max(0, Math.min(currentSection + direction, sections.length - 1));
+
+      if (currentSection !== nextIndex) {
+        e.preventDefault();
+        scrollToSection(sections[nextIndex]);
       }
-
-      // Reset scroll distance
-      scrollDistance.current = 0;
+      scrollAccumulator.current = 0;
     }
   };
 
   useEffect(() => {
-    // Attach scroll event
-    window.addEventListener("wheel", handleWheel);
-
-    return () => {
-      // Clean up event listener
-      window.removeEventListener("wheel", handleWheel);
-    };
+    window.addEventListener("wheel", handleWheel, { passive: false });
+    return () => window.removeEventListener("wheel", handleWheel);
   }, []);
 
   return (
-    <>
-      <Box>
-        <Navbar />
-        <Box
-          sx={{
-            height: "100vh",
-            weight: "100vw",
-            position: "fixed",
-            top: 0,
-            zIndex: -1,
-          }}
-        >
-          <CanvasContainer />
-        </Box>
-        <Overlay ref={(el) => (sectionsRef.current[0] = el)} />
-        <InfiniteCarousel ref={(el) => (sectionsRef.current[1] = el)} />
-        <MoreInfo ref={(el) => (sectionsRef.current[2] = el)} />
-      </Box>
-    </>
+    <Box>
+      <Navbar />
+      <CanvasContainer />
+      <Overlay ref={(el) => (sectionsRef.current[0] = el)} />
+      <InfiniteCarousel ref={(el) => (sectionsRef.current[1] = el)} />
+      <MoreInfo ref={(el) => (sectionsRef.current[2] = el)} />
+    </Box>
   );
 }
 
 export default App;
-const planets = [
-  { Component: EarthScene, name: "EARTH" },
-  { Component: MoonScene, name: "MOON" },
-  { Component: MarsScene, name: "MARS" },
-  { Component: JupiterScene, name: "JUPITER" },
-];

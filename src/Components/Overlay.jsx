@@ -1,10 +1,31 @@
 import { Box, Button, Typography } from "@mui/material";
-import React, { forwardRef } from "react";
+import React, { forwardRef, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { selectActivePlanets } from "../Redux/Homepage/selector";
+import { StarField } from "./StarField";
+import { Canvas } from "@react-three/fiber";
+import Loader from "./Loader";
 
 const Overlay = forwardRef((props, ref) => {
   const activePlanet = useSelector(selectActivePlanets);
+  const [isVisible, setIsVisible] = useState(true);
+
+  useEffect(() => {
+    // Prevent scrolling when the Box is visible
+    if (isVisible) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+
+    // Hide the Box after 2 seconds
+    const timer = setTimeout(() => {
+      setIsVisible(false);
+    }, 4000);
+
+    // Cleanup timeout on component unmount
+    return () => clearTimeout(timer);
+  }, [isVisible]);
   return (
     <>
       <Box
@@ -17,20 +38,20 @@ const Overlay = forwardRef((props, ref) => {
           flexDirection: "column",
           justifyContent: "center",
           textAlign: "center",
-          height: "100vh",
+          height: { xs: "100dvh", md: "100vh" },
           width: "100vw",
         }}
       >
         <Box
           sx={{
-            padding: "0px 32px",
+            px: { xs: "16px", sm: "24px", md: "32px" },
           }}
         >
           <Box>
             <Typography
               component={"h1"}
               sx={{
-                fontSize: 30,
+                fontSize: { xs: 26, sm: 30 },
                 lineHeight: 1.5,
                 width: "fit-content",
                 mx: "auto",
@@ -40,14 +61,14 @@ const Overlay = forwardRef((props, ref) => {
             </Typography>
             <Typography
               sx={{
-                fontSize: 110,
+                fontSize: { xs: 60, sm: 80, lg: 110 },
                 lineHeight: 1.5,
                 position: "relative",
                 width: "fit-content",
                 mx: "auto",
                 ":after": {
                   content: "''",
-                  width: 120,
+                  width: { xs: 80, md: 120 },
                   position: "absolute",
                   bottom: 0,
                   left: "50%",
@@ -62,11 +83,10 @@ const Overlay = forwardRef((props, ref) => {
           </Box>
           <Typography
             sx={{
-              padding: "0px 18%",
+              px: { md: "8%", lg: "18%" },
               mt: 3,
               fontSize: 18,
               lineHeight: 2,
-              // color: "#fff"
             }}
           >
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias
@@ -79,17 +99,28 @@ const Overlay = forwardRef((props, ref) => {
               borderRadius: "50px",
               backgroundColor: "#fff",
               color: "#000",
-              padding: "14px 38px",
-              marginTop: 12,
+              py: "14px",
+              marginTop: { xs: 6, md: 12 },
+              mb: { md: 14 },
               border: 0,
+              width: { xs: 160, md: 175 },
               fontWeight: 700,
               letterSpacing: 0.2,
+              background: "linear-gradient(to bottom, #c6d9ef, #9fbddf)",
+              boxShadow: "0 4px 6px rgba(0, 0, 0, 0.2)",
+              transition: "transform 0.3s, box-shadow 0.3s",
+              ":hover": {
+                transform: "translateY(-2px)",
+                boxShadow: "0 6px 15px rgba(100, 200, 255, 0.6)",
+              },
             }}
           >
             GET STARTED
           </Button>
         </Box>
       </Box>
+      {/* Loader section */}
+      {isVisible && <Loader />}
     </>
   );
 });

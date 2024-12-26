@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Planet } from "./Planets";
 import { StarField } from "./StarField";
@@ -14,31 +14,89 @@ import {
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { actions } from "../Redux/Homepage/slice";
+import { useMediaQuery, useTheme } from "@mui/material";
+import PlanetNavigation from "./PlanetsNavigation";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export const CanvasContainer = () => {
   const dispatch = useDispatch();
   const planetGroupRef = useRef();
-  // const [currentIndex, setCurrentIndex] = useState(0);
   const [isSecondSection, setIsSecondSection] = useState(false);
   const [isThirdSection, setIsThirdSection] = useState(false);
+  const [isRotating, setIsRotating] = useState(false);
+  const [windowSize, setWindowSize] = useState({
+    width: typeof window !== "undefined" ? window.innerWidth : 0,
+    height: typeof window !== "undefined" ? window.innerHeight : 0,
+  });
   const activePlanet = useSelector(selectActivePlanets);
   const planetsList = useSelector(selectPlanetsList);
   const planetsRef = useRef({});
-  // Store the carousel positions
   const carouselPositions = useRef({});
   const currentIndex = useRef(0);
-  const radius = 12;
+  const theme = useTheme();
+  const sm = useMediaQuery(theme.breakpoints.down("sm"));
+  const md = useMediaQuery(theme.breakpoints.between("sm", "md"));
+  const lg = useMediaQuery(theme.breakpoints.between("md", "lg"));
+  const xl = useMediaQuery(theme.breakpoints.between("lg", "xl"));
+  const xxl = useMediaQuery(theme.breakpoints.up("xl"));
+
+  // Responsive radius calculation
+  const getResponsiveRadius = () => {
+    if (sm) return 8;
+    if (md) return 10;
+    if (xl) return 10;
+    return 12; // Desktop
+  };
+
+  // Responsive camera settings
+  const getCameraSettings = () => {
+    if (sm) {
+      return {
+        fov: 60,
+        position: [0, 0, 12],
+      };
+    }
+    if (md) {
+      return {
+        fov: 50,
+        position: [0, 0, 13],
+      };
+    }
+    return {
+      fov: 44,
+      position: [0, 0, 15],
+    };
+  };
 
   const calculateCarouselPosition = (index) => {
+    const radius = getResponsiveRadius();
     const angle = (index / planets.length) * Math.PI * 2;
+    const yOffset = xxl || lg ? -1.5 : -2; // Adjust vertical position for mobile
     return {
       x: Math.cos(angle) * radius,
-      y: -1.5,
+      y: yOffset,
       z: Math.sin(angle) * radius,
     };
   };
+
+  // Handle window resize
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Update carousel positions when window size changes
+  useEffect(() => {
+    updateCarouselPositions();
+  }, [windowSize]);
 
   const updateCarouselPositions = () => {
     planets.forEach((planet, index) => {
@@ -55,129 +113,131 @@ export const CanvasContainer = () => {
       planetGroupRef.current.rotation.y = currentYRotation;
     }
   };
-  // const rotatePlanets = (direction) => {
-  //   resetGroupPosition();
-
-  //   setCurrentIndex((prevIndex) => {
-  //     const newIndex =
-  //       direction === "next"
-  //         ? (prevIndex + 1) % planets.length
-  //         : (prevIndex - 1 + planets.length) % planets.length;
-
-  //     console.log("newIndex", newIndex);
-
-  //     const tl = gsap.timeline();
-
-  //     tl.to(planetGroupRef.current.rotation, {
-  //       y: (newIndex * (Math.PI * 2)) / planets.length,
-  //       duration: 1,
-  //       ease: "power2.inOut",
-  //       onComplete: () => {
-  //         resetGroupPosition();
-  //         updateCarouselPositions();
-  //       },
-  //     });
-
-  //     dispatch(
-  //       actions.setActivePlanet({
-  //         name: planets[currentIndex].name,
-  //         position: currentIndex + 1,
-  //       })
-  //     );
-
-  //     return newIndex; // Return the updated index for React state
-  //   });
-  // };
-
-  // const handleNext = () => rotatePlanets("next");
-  // const handleBack = () => rotatePlanets("back");
-
-  // Initialize and update carousel positions
-  // useEffect(() => {
-  //   updateCarouselPositions();
-  // }, [currentIndex.current]);
 
   const INITIAL_ROTATION = -Math.PI / 2;
+
   useEffect(() => {
     updateCarouselPositions();
     setTimeout(() => {
-      console.log("planetGroupRef.current.rotation", planetGroupRef.current);
       if (planetGroupRef.current) {
-        console.log("planetGroupRef.current.rotation", planetGroupRef.current);
         planetGroupRef.current.rotation.y = INITIAL_ROTATION;
       }
     }, 1300);
   }, []);
 
-  // const rotatePlanets = (direction) => {
-  //   resetGroupPosition();
-  //   let newIndex = 0;
-  //   console.log("currentIndex.current", currentIndex.current);
-  //   newIndex =
-  //     direction === "next"
-  //       ? (currentIndex.current + 1) % planets.length
-  //       : (currentIndex.current - 1 + planets.length) % planets.length;
+  const calculateRotationAngle = (currentIndex, newIndex, direction) => {
+    const totalPlanets = planets.length;
+    let clockwiseDistance =
+      (newIndex - currentIndex + totalPlanets) % totalPlanets;
+    let counterClockwiseDistance =
+      (currentIndex - newIndex + totalPlanets) % totalPlanets;
 
-  //   console.log("newIndex", newIndex);
-
-  //   const tl = gsap.timeline();
-
-  //   tl.to(planetGroupRef.current.rotation, {
-  //     y: INITIAL_ROTATION + newIndex * ((Math.PI * 2) / planets.length),
-  //     duration: 1,
-  //     ease: "power2.inOut",
-  //     onComplete: () => {
-  //       resetGroupPosition();
-  //       updateCarouselPositions();
-  //     },
-  //   });
-
-  //   // setCurrentIndex(newIndex);
-  //   currentIndex.current = newIndex;
-  //   const currentPlanetIndex = Number(currentIndex.current);
-  //   // console.log("currentIndex.current",currentIndex.current);
-  //   console.log("currentIndex", currentIndex.current);
-  //   dispatch(
-  //     actions.setActivePlanet({
-  //       name: planets[currentPlanetIndex].name,
-  //       position: currentPlanetIndex,
-  //     })
-  //   );
-  // };
+    if (direction === "next") {
+      // For next, we want clockwise rotation (negative angle)
+      return clockwiseDistance * ((Math.PI * 2) / totalPlanets);
+    } else {
+      // For back, we want counter-clockwise rotation (positive angle)
+      return -(counterClockwiseDistance * ((Math.PI * 2) / totalPlanets));
+    }
+  };
 
   const rotatePlanets = (direction) => {
+    if (isRotating) return;
+
+    setIsRotating(true);
     resetGroupPosition();
-    let newIndex = 0;
-    newIndex =
+
+    let newIndex =
       direction === "next"
         ? (currentIndex.current + 1) % planets.length
         : (currentIndex.current - 1 + planets.length) % planets.length;
 
+    const rotationAngle = calculateRotationAngle(
+      currentIndex.current,
+      newIndex,
+      direction
+    );
     const tl = gsap.timeline();
 
+    const currentRotation = planetGroupRef.current.rotation.y;
+    const targetRotation = currentRotation + rotationAngle;
+
     tl.to(planetGroupRef.current.rotation, {
-      y: INITIAL_ROTATION + newIndex * ((Math.PI * 2) / planets.length),
+      y: targetRotation,
       duration: 1,
       ease: "power2.inOut",
       onComplete: () => {
         resetGroupPosition();
         updateCarouselPositions();
+        setIsRotating(false);
       },
     });
 
     currentIndex.current = newIndex;
-    const currentPlanetIndex = Number(currentIndex.current);
     dispatch(
       actions.setActivePlanet({
-        name: planets[currentPlanetIndex].name,
-        position: currentPlanetIndex,
+        name: planets[newIndex].name,
+        position: newIndex,
       })
     );
   };
+
   const handleNext = () => rotatePlanets("next");
   const handleBack = () => rotatePlanets("back");
 
-  // Set up scroll trigger animations
+  // Responsive section positions
+  const getResponsiveSectionPositions = () => {
+    const scale = sm ? 0.8 : md || lg ? 1.2 : 1.5;
+
+    const secondSectionPosition = {
+      MOON: {
+        x: sm ? 1.5 : 2.5,
+        y: 0,
+        z: sm ? 6 : 9,
+      },
+      JUPITER: {
+        x: sm ? -1.5 : -2.5,
+        y: 0,
+        z: sm ? -6 : -9,
+      },
+      EARTH: {
+        x: sm ? 6 : 9,
+        y: 0,
+        z: sm ? -1.5 : md ? -2 : xl ? -2 : -2.5,
+      },
+      MARS: {
+        x: sm ? -6 : -9,
+        y: 0,
+        z: sm ? 1.5 : 2.5,
+      },
+    };
+
+    const thirdSectionPosition = {
+      MOON: {
+        x: 0,
+        y: 0,
+        z: sm ? 10.5 : 12.8,
+      },
+      JUPITER: {
+        x: 0,
+        y: 0,
+        z: sm ? -10.5 : -12.8,
+      },
+      EARTH: {
+        x: sm ? 10.5 : 12.8,
+        y: 0,
+        z: 0,
+      },
+      MARS: {
+        x: sm ? -10.5 : -12.8,
+        y: 0,
+        z: 0,
+      },
+    };
+
+    return { secondSectionPosition, thirdSectionPosition, scale };
+  };
+
   useEffect(() => {
     const secondSection = document.querySelector(".second-section");
     const thirdSection = document.querySelector(".third-section");
@@ -222,62 +282,17 @@ export const CanvasContainer = () => {
     };
   }, []);
 
-  // Handle scroll-based animations
   useEffect(() => {
     if (!planetGroupRef.current) return;
 
     const activePlanetMesh = planetsRef.current[activePlanet.name];
-    console.log("active planet name", activePlanet.name);
     if (!activePlanetMesh) return;
 
     const tl = gsap.timeline();
-    const secondSectionPosition = {
-      MOON: {
-        x: 2.5,
-        y: 0,
-        z: 9,
-      },
-      JUPITER: {
-        x: -2.5,
-        y: 0,
-        z: -9,
-      },
-      EARTH: {
-        x: 9,
-        y: 0,
-        z: -2.5,
-      },
-      MARS: {
-        x: -9,
-        y: 0,
-        z: 2.5,
-      },
-    };
-    const thirdSectionPosition = {
-      MOON: {
-        x: 0,
-        y: 0,
-        z: 12.8,
-      },
-      JUPITER: {
-        x: 0,
-        y: 0,
-        z: -12.8,
-      },
-      EARTH: {
-        x: 12.8,
-        y: 0,
-        z: 0,
-      },
-      MARS: {
-        x: -12.8,
-        y: 0,
-        z: 0,
-      },
-    };
+    const { secondSectionPosition, thirdSectionPosition, scale } =
+      getResponsiveSectionPositions();
 
     if (isSecondSection) {
-      // Animate active planet to second section position
       tl.to(activePlanetMesh.position, {
         ...secondSectionPosition[activePlanet.name],
         duration: 1,
@@ -285,16 +300,15 @@ export const CanvasContainer = () => {
       }).to(
         activePlanetMesh.scale,
         {
-          x: 1.5,
-          y: 1.5,
-          z: 1.5,
+          x: sm ? scale + 0.4 : scale,
+          y: sm ? scale + 0.4 : scale,
+          z: sm ? scale + 0.4 : scale,
           duration: 1,
           ease: "power2.inOut",
         },
         "-=1.3"
       );
 
-      // hide other planets
       Object.entries(planetsRef.current).forEach(([name, mesh]) => {
         if (name !== activePlanet.name) {
           gsap.to(mesh.material, {
@@ -303,7 +317,7 @@ export const CanvasContainer = () => {
             ease: "power2.inOut",
             onComplete: () => {
               mesh.visible = false;
-            }
+            },
           });
         } else {
           mesh.visible = true;
@@ -311,7 +325,6 @@ export const CanvasContainer = () => {
         }
       });
     } else if (isThirdSection) {
-      // Animate active planet to third section position
       tl.to(activePlanetMesh.position, {
         ...thirdSectionPosition[activePlanet.name],
         duration: 1.3,
@@ -319,24 +332,21 @@ export const CanvasContainer = () => {
       }).to(
         activePlanetMesh.scale,
         {
-          x: 1.5,
-          y: 1.5,
-          z: 1.5,
+          x: scale,
+          y: scale,
+          z: scale,
           duration: 1,
           ease: "power2.inOut",
         },
         "-=1.3"
       );
     } else {
-      // Reset to carousel positions
       Object.entries(planetsRef.current).forEach(([name, mesh]) => {
         mesh.visible = true;
         const carouselPos = carouselPositions.current[name];
 
         tl.to(mesh.position, {
-          x: carouselPos.x,
-          y: carouselPos.y,
-          z: carouselPos.z,
+          ...carouselPos,
           duration: 1,
           ease: "power2.inOut",
         })
@@ -361,10 +371,12 @@ export const CanvasContainer = () => {
           );
       });
     }
-  }, [isSecondSection, isThirdSection, activePlanet]);
+  }, [isSecondSection, isThirdSection, activePlanet, windowSize]);
 
   useEffect(() => {
     const handleKeyPress = (event) => {
+      if (isRotating) return; // Ignore keyboard input while rotating
+
       if (event.key === "ArrowLeft") {
         handleBack();
       } else if (event.key === "ArrowRight") {
@@ -374,19 +386,28 @@ export const CanvasContainer = () => {
 
     window.addEventListener("keydown", handleKeyPress);
     return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [currentIndex.current]);
+  }, [isRotating]);
+
+  const cameraSettings = getCameraSettings();
 
   return (
     <>
       <Canvas
         dpr={[1, 2]}
-        style={{ height: "100vh", width: "100vw", position: "fixed", top: 0 }}
+        style={{
+          height: "100vh",
+          width: "100vw",
+          position: "fixed",
+          top: 0,
+          touchAction: "none",
+          zIndex: -1,
+        }}
         camera={{
-          fov: 44,
-          position: [0, 0, 15],
+          fov: cameraSettings.fov,
+          position: cameraSettings.position,
         }}
       >
-        <color attach={"background"} args={["#000"]} />
+        <color attach="background" args={["#000"]} />
         <group name="Planets" ref={planetGroupRef}>
           {planets.map((planet, index) => {
             const position = calculateCarouselPosition(index);
@@ -407,6 +428,13 @@ export const CanvasContainer = () => {
         </group>
         <StarField />
       </Canvas>
+      {!isThirdSection && (
+        <PlanetNavigation
+          handleNext={handleNext}
+          handleBack={handleBack}
+          isRotating={isRotating}
+        />
+      )}
     </>
   );
 };
