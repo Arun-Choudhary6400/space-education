@@ -14,7 +14,7 @@ const InfiniteCarousel = forwardRef((props, ref) => {
         ref={ref}
         className="second-section section"
         sx={{
-          height: { xs: "100dvh", md: "100vh" },
+          height: { xs: "100svh", md: "100vh" },
           width: "100vw",
           display: "flex",
           flexDirection: "column",

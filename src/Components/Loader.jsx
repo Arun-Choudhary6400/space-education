@@ -8,14 +8,14 @@ const Loader = () => {
         sx={{
           position: "fixed",
           inset: 0,
-          zIndex: 99,
+          zIndex: 1000,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           backgroundColor: "#000",
         }}
       >
-        <div class="title">
+        <div className="title">
           <svg
             width="300"
             height="144"
