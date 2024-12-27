@@ -38,7 +38,7 @@ const Overlay = forwardRef((props, ref) => {
           flexDirection: "column",
           justifyContent: "center",
           textAlign: "center",
-          height: { xs: "100dvh", md: "100vh" },
+          height: { xs: "100svh", md: "100vh" },
           width: "100vw",
         }}
       >

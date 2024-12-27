@@ -118,11 +118,14 @@ export const CanvasContainer = () => {
 
   useEffect(() => {
     updateCarouselPositions();
-    setTimeout(() => {
+    // Do rotation initially
+    const timer = setTimeout(() => {
       if (planetGroupRef.current) {
         planetGroupRef.current.rotation.y = INITIAL_ROTATION;
       }
-    }, 1300);
+    }, 4000);
+
+    return () => clearTimeout(timer);
   }, []);
 
   const calculateRotationAngle = (currentIndex, newIndex, direction) => {
@@ -182,8 +185,8 @@ export const CanvasContainer = () => {
     );
   };
 
-  const handleNext = () => rotatePlanets("next");
-  const handleBack = () => rotatePlanets("back");
+  const handleNext = () => rotatePlanets("back");
+  const handleBack = () => rotatePlanets("next");
 
   // Responsive section positions
   const getResponsiveSectionPositions = () => {

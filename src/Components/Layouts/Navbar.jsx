@@ -33,9 +33,9 @@ const Navbar = (props) => {
         sx={{
           position: "fixed",
           inset: 0,
-          zIndex: 10,
+          zIndex: 999,
           backgroundColor: "transparent",
-          height: 100,
+          height: 90,
           padding: "0px 32px 0px 24px",
           pointerEvents: "none",
         }}
