@@ -316,13 +316,14 @@ export const CanvasContainer = () => {
         if (name !== activePlanet.name) {
           gsap.to(mesh.material, {
             opacity: 0,
-            duration: 1,
+            duration: 0.5,
             ease: "power2.inOut",
             onComplete: () => {
               mesh.visible = false;
             },
           });
-        } else {
+        }
+         else {
           mesh.visible = true;
           gsap.to(mesh.material, { opacity: 1, duration: 0.5 });
         }
@@ -344,7 +345,31 @@ export const CanvasContainer = () => {
         "-=1.3"
       );
     } else {
+
+      activePlanetMesh.visible = true;
+      const carouselPos = carouselPositions.current[activePlanet.name];
+
+      tl.to(activePlanetMesh.position, {
+        ...carouselPos,
+        duration: 1,
+        ease: "power2.inOut",
+      })
+        .to(
+          activePlanetMesh.scale,
+          {
+            x: 1,
+            y: 1,
+            z: 1,
+            duration: 1,
+            ease: "power2.inOut",
+          },
+          "-=1"
+        )
+
       Object.entries(planetsRef.current).forEach(([name, mesh]) => {
+        if(activePlanet.name != name){
+
+        
         mesh.visible = true;
         const carouselPos = carouselPositions.current[name];
 
@@ -372,6 +397,7 @@ export const CanvasContainer = () => {
             },
             "-=1"
           );
+        }
       });
     }
   }, [isSecondSection, isThirdSection, activePlanet, windowSize]);
