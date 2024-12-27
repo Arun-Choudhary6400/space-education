@@ -34,9 +34,20 @@ const InfiniteCarousel = forwardRef((props, ref) => {
                   fontSize: { xs: 26, sm: 30 },
                   lineHeight: 1.5,
                   width: "fit-content",
+                  textTransform: "uppercase"
                 }}
               >
-                THE BLUE PLANET
+                THE{" "}
+                {activePlanet.name == "EARTH"
+                  ? "Blue"
+                  : activePlanet.name == "MARS"
+                  ? "Red"
+                  : activePlanet.name == "JUPITER"
+                  ? "Giant"
+                  : activePlanet.name == "VENUS"
+                  ? "Sister"
+                  : ""}{" "}
+                PLANET
               </Typography>
               <Typography
                 sx={{
@@ -91,8 +102,8 @@ const InfiniteCarousel = forwardRef((props, ref) => {
                     transition: "transform 0.3s, box-shadow 0.3s",
                     ":hover": {
                       transform: "translateY(-2px)",
-                      boxShadow: "0 6px 15px rgba(100, 200, 255, 0.6)"
-                    }
+                      boxShadow: "0 6px 15px rgba(100, 200, 255, 0.6)",
+                    },
                   }}
                 >
                   Learn More
@@ -108,8 +119,8 @@ const InfiniteCarousel = forwardRef((props, ref) => {
                     transition: "transform 0.3s, box-shadow 0.3s",
                     ":hover": {
                       transform: "translateY(-2px)",
-                      boxShadow: "0 6px 15px rgba(100, 200, 255, 0.6)"
-                    }
+                      boxShadow: "0 6px 15px rgba(100, 200, 255, 0.6)",
+                    },
                   }}
                 >
                   <PlayArrowRounded
