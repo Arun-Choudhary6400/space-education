@@ -16,6 +16,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { actions } from "../Redux/Homepage/slice";
 import { useMediaQuery, useTheme } from "@mui/material";
 import PlanetNavigation from "./PlanetsNavigation";
+import VenusScene from "./Venus";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -74,9 +75,9 @@ export const CanvasContainer = () => {
     const angle = (index / planets.length) * Math.PI * 2;
     const yOffset = xxl || lg ? -1.5 : -2; // Adjust vertical position for mobile
     return {
-      x: Math.cos(angle) * radius,
+      x: Math.sin(angle) * radius * -1,
       y: yOffset,
-      z: Math.sin(angle) * radius,
+      z: Math.cos(angle) * radius,
     };
   };
 
@@ -119,13 +120,13 @@ export const CanvasContainer = () => {
   useEffect(() => {
     updateCarouselPositions();
     // Do rotation initially
-    const timer = setTimeout(() => {
-      if (planetGroupRef.current) {
-        planetGroupRef.current.rotation.y = INITIAL_ROTATION;
-      }
-    }, 4000);
+    // const timer = setTimeout(() => {
+    //   if (planetGroupRef.current) {
+    //     planetGroupRef.current.rotation.y = INITIAL_ROTATION;
+    //   }
+    // }, 3500);
 
-    return () => clearTimeout(timer);
+    // return () => clearTimeout(timer);
   }, []);
 
   const calculateRotationAngle = (currentIndex, newIndex, direction) => {
@@ -193,48 +194,48 @@ export const CanvasContainer = () => {
     const scale = sm ? 0.8 : md || lg ? 1.2 : 1.5;
 
     const secondSectionPosition = {
-      MOON: {
-        x: sm ? 1.5 : 2.5,
-        y: 0,
-        z: sm ? 6 : 9,
-      },
-      JUPITER: {
-        x: sm ? -1.5 : -2.5,
-        y: 0,
-        z: sm ? -6 : -9,
-      },
-      EARTH: {
-        x: sm ? 6 : 9,
-        y: 0,
-        z: sm ? -1.5 : md ? -2 : xl ? -2 : -2.5,
-      },
-      MARS: {
+      VENUS: {
         x: sm ? -6 : -9,
         y: 0,
         z: sm ? 1.5 : 2.5,
       },
+      JUPITER: {
+        x: sm ? 6 : 9,
+        y: 0,
+        z: sm ? -1.5 : -2.5,
+      },
+      EARTH: {
+        x: sm ? 1.5 : md ? 2 : xl ? 2 : 2.5,
+        y: 0,
+        z: sm ? 6 : 9,
+      },
+      MARS: {
+        x: sm ? -1.5 : -2.5,
+        y: 0,
+        z: sm ? -6 : -9,
+      },
     };
 
     const thirdSectionPosition = {
-      MOON: {
-        x: 0,
+      VENUS: {
+        z: 0,
         y: 0,
-        z: sm ? 10.5 : 12.8,
+        x: sm ? -10.5 : -12.8,
       },
       JUPITER: {
-        x: 0,
+        z: 0,
         y: 0,
-        z: sm ? -10.5 : -12.8,
+        x: sm ? 10.5 : 12.8,
       },
       EARTH: {
-        x: sm ? 10.5 : 12.8,
+        z: sm ? 10.5 : 12.8,
         y: 0,
-        z: 0,
+        x: 0,
       },
       MARS: {
-        x: sm ? -10.5 : -12.8,
+        z: sm ? -10.5 : -12.8,
         y: 0,
-        z: 0,
+        x: 0,
       },
     };
 
@@ -314,6 +315,7 @@ export const CanvasContainer = () => {
 
       Object.entries(planetsRef.current).forEach(([name, mesh]) => {
         if (name !== activePlanet.name) {
+          const carouselPos = carouselPositions.current[name];
           gsap.to(mesh.material, {
             opacity: 0,
             duration: 0.5,
@@ -322,8 +324,22 @@ export const CanvasContainer = () => {
               mesh.visible = false;
             },
           });
-        }
-         else {
+          gsap.to(
+            mesh.scale,
+            {
+              x: 1,
+              y: 1,
+              z: 1,
+              duration: 1,
+              ease: "power2.inOut",
+            },
+          );
+          gsap.to(mesh.position, {
+            ...carouselPos,
+            duration: 1,
+            ease: "power2.inOut",
+          })
+        } else {
           mesh.visible = true;
           gsap.to(mesh.material, { opacity: 1, duration: 0.5 });
         }
@@ -470,7 +486,7 @@ export const CanvasContainer = () => {
 
 const planets = [
   { Component: EarthScene, name: "EARTH" },
-  { Component: MoonScene, name: "MOON" },
+  { Component: VenusScene, name: "VENUS" },
   { Component: MarsScene, name: "MARS" },
   { Component: JupiterScene, name: "JUPITER" },
 ];

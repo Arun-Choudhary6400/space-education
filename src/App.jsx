@@ -11,6 +11,7 @@ import { Box } from "@mui/material";
 import Overlay from "./Components/Overlay";
 import { CanvasContainer } from "./Components/CanvasContainer";
 import MoreInfo from "./Components/MoreInfo";
+import { ReactLenis, useLenis } from "lenis/react";
 
 gsap.registerPlugin(ScrollToPlugin, ScrollTrigger);
 
@@ -39,12 +40,12 @@ function App() {
           if (!isScrolling.current) {
             scrollToSection(section);
           }
-        }
+        },
       });
     });
 
     return () => {
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
     };
   }, []);
 
@@ -59,7 +60,7 @@ function App() {
           isScrolling.current = false;
           scrollAccumulator.current = 0;
         }, 100);
-      }
+      },
     });
   };
 
@@ -74,13 +75,17 @@ function App() {
     if (scrollAccumulator.current >= SCROLL_THRESHOLD) {
       const sections = sectionsRef.current.filter(Boolean);
       const currentSection = sections.findIndex(
-        section => Math.abs(window.scrollY - section.offsetTop) < window.innerHeight / 2
+        (section) =>
+          Math.abs(window.scrollY - section.offsetTop) < window.innerHeight / 2
       );
 
       if (currentSection === -1) return;
 
       const direction = e.deltaY > 0 ? 1 : -1;
-      const nextIndex = Math.max(0, Math.min(currentSection + direction, sections.length - 1));
+      const nextIndex = Math.max(
+        0,
+        Math.min(currentSection + direction, sections.length - 1)
+      );
 
       if (currentSection !== nextIndex) {
         e.preventDefault();
@@ -95,14 +100,28 @@ function App() {
     return () => window.removeEventListener("wheel", handleWheel);
   }, []);
 
+  const lenisRef = useRef();
+
+  useEffect(() => {
+    function update(time) {
+      lenisRef.current?.lenis?.raf(time * 1000);
+    }
+
+    gsap.ticker.add(update);
+
+    return () => gsap.ticker.remove(update);
+  }, []);
+
   return (
-    <Box>
-      <Navbar />
-      <CanvasContainer />
-      <Overlay ref={(el) => (sectionsRef.current[0] = el)} />
-      <InfiniteCarousel ref={(el) => (sectionsRef.current[1] = el)} />
-      <MoreInfo ref={(el) => (sectionsRef.current[2] = el)} />
-    </Box>
+    <ReactLenis options={{ autoRaf: false }} ref={lenisRef}>
+      <Box>
+        <Navbar />
+        <CanvasContainer />
+        <Overlay ref={(el) => (sectionsRef.current[0] = el)} />
+        <InfiniteCarousel ref={(el) => (sectionsRef.current[1] = el)} />
+        <MoreInfo ref={(el) => (sectionsRef.current[2] = el)} />
+      </Box>
+    </ReactLenis>
   );
 }
 
