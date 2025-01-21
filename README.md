@@ -1,8 +1,19 @@
-# React + Vite
+# space-education
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A educational site designed to educate people about planets and space travel. Featuring a dark layout, bright elements that shine mostly in vistas with a planet dial that is rotate-able, the website is fashioned to offer astronomy education in space through various visualization tools.
 
-Currently, two official plugins are available:
+## Project Links
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Live Demo:** [https://space-education-80mo.onrender.com/]
+
+## Installation
+
+```bash
+# Clone this repository
+git clone https://github.com/Arun-Choudhary6400/space-education.git
+
+# Navigate into the project folder
+cd space-education
+
+# Install dependencies
+yarn install
