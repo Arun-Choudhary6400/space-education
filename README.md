@@ -16,4 +16,7 @@ git clone https://github.com/Arun-Choudhary6400/space-education.git
 cd space-education
 
 # Install dependencies
-yarn install
+yarn
+
+# Run project
+yarn dev
