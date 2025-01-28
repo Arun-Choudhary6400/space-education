@@ -113,6 +113,7 @@ const Navbar = (props) => {
                   width: drawerWidth,
                   height: "100vh",
                   backgroundColor: "transparent",
+                  background: "linear-gradient(#0000ff50 55%, white)",
                   backdropFilter: "blur(4px)",
                   display: "flex",
                   flexDirection: "column",

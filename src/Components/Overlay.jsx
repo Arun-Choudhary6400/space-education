@@ -61,7 +61,7 @@ const Overlay = forwardRef((props, ref) => {
             </Typography>
             <Typography
               sx={{
-                fontSize: { xs: 60, sm: 80, lg: 110 },
+                fontSize: { xs: 54, sm: 80, lg: 110 },
                 lineHeight: 1.5,
                 position: "relative",
                 width: "fit-content",
@@ -85,14 +85,11 @@ const Overlay = forwardRef((props, ref) => {
             sx={{
               px: { md: "8%", lg: "18%" },
               mt: 3,
-              fontSize: 18,
-              lineHeight: 2,
+              fontSize: {xs: 16, sm: 18},
+              lineHeight: {xs: 1.8, sm: 2},
             }}
           >
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias
-            quis reprehenderit vero ab! A earum nulla porro, numquam dignissimos
-            architecto ipsa iure. Totam, rem. Magni illum in natus ullam, ab
-            necessitatibus labore unde
+            {headingData[activePlanet.name]}
           </Typography>
           <Button
             sx={{
@@ -126,3 +123,13 @@ const Overlay = forwardRef((props, ref) => {
 });
 
 export default Overlay;
+
+const headingData = {
+  EARTH:
+    "Earth is the third planet from the Sun and the only known celestial body to support life. With vast oceans, diverse ecosystems, and a stable atmosphere, Earth provides the perfect conditions for sustaining life. The planet's surface is a dynamic mix of land, water, and air, fostering a wide range of biodiversity.",
+  JUPITER:
+    "Jupiter is the largest planet in our Solar System, known for its massive size, thick atmosphere, and the iconic Great Red Spot, a giant storm persisting for centuries. It is a gas giant primarily composed of hydrogen and helium.",
+  MARS: "Often referred to as the 'Red Planet,' Mars is the fourth planet from the Sun and is notable for its rusty red appearance due to iron oxide on its surface. It has the tallest volcano and the deepest canyon in the Solar System.",
+  VENUS:
+    "Venus, the second planet from the Sun, is similar in size and structure to Earth but has a thick, toxic atmosphere that traps heat, making it the hottest planet in the Solar System.",
+};
