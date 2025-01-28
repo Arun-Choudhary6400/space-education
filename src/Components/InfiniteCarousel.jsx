@@ -52,14 +52,14 @@ const InfiniteCarousel = forwardRef((props, ref) => {
               <Typography
                 sx={{
                   fontSize: { xs: 54, sm: 80, lg: 110 },
-                  lineHeight: 1.5,
+                  lineHeight: 1.3,
                   position: "relative",
                   width: "fit-content",
                   ":after": {
                     content: "''",
                     width: 120,
                     position: "absolute",
-                    bottom: { xs: -20, lg: -40 },
+                    bottom: { xs: -20, lg: -25 },
                     left: 0,
                     borderRadius: "12px",
                     borderBottom: "4px solid #8FD5E7",
@@ -70,7 +70,7 @@ const InfiniteCarousel = forwardRef((props, ref) => {
               </Typography>
               <Typography
                 sx={{
-                  pt: { xs: 6, sm: 8, lg: 13 },
+                  pt: { xs: 6, sm: 7, lg: 10 },
                   fontSize: {xs: 16, sm: 18},
                   lineHeight: {xs: 1.8, sm: 2},
                 }}
@@ -148,19 +148,16 @@ const infoData = {
 🔹 Moons: 1 (The Moon)
   `,
   JUPITER: `Jupiter is the largest planet in our Solar System, with a mass 318 times that of Earth. Its swirling atmosphere is made of hydrogen and helium, and it is home to the Great Red Spot, a storm that has raged for over 300 years.
-
 🔹 Diameter: 139,820 km
 🔹 Distance from Sun: 778.5 million km
 🔹 Atmosphere: Hydrogen, Helium, Methane, Ammonia
 🔹 Moons: 95+ (including Ganymede, Europa, Io, Callisto)`,
   MARS: `Mars, the fourth planet from the Sun, is known for its rusty red appearance due to iron oxide (rust) on its surface. It has the tallest volcano in the Solar System, Olympus Mons, and the deepest canyon, Valles Marineris. Scientists believe Mars once had liquid water, making it a key target for future human exploration.
-
 🔹 Diameter: 6,779 km
 🔹 Distance from Sun: 227.9 million km
 🔹 Atmosphere: Carbon dioxide (95%), Nitrogen, Argon
 🔹 Moons: 2 (Phobos, Deimos)`,
   VENUS: `Venus is often called Earth's twin because of its similar size and composition, but it has a toxic, thick atmosphere that traps heat, making it the hottest planet in our Solar System. Surface temperatures reach 475°C (900°F)—hot enough to melt lead!
-
 🔹 Diameter: 12,104 km
 🔹 Distance from Sun: 108.2 million km
 🔹 Atmosphere: Carbon dioxide (96%), Nitrogen, Sulfuric Acid Clouds
